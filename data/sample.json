@@ -1,0 +1,18 @@
+{
+  "project": "support-desk-ai-agent",
+  "resource": "tickets",
+  "samples": [
+    {
+      "id": "t1",
+      "subject": "Cannot login",
+      "priority": "high",
+      "status": "open"
+    },
+    {
+      "id": "t2",
+      "subject": "Invoice typo",
+      "priority": "low",
+      "status": "open"
+    }
+  ]
+}
