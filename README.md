@@ -1,34 +1,20 @@
 # Support Desk AI Agent
 
-Ticket triage agent with SLA hints, macro suggestions, and a support inbox UI backed by FastAPI.
+Support desk agent that triages tickets, proposes macros/SLA, drafts replies, and keeps an auditable inbox workflow.
 
-## Stack
+![CI](https://img.shields.io/badge/CI-pytest%20%7C%20ruff-22c55e)
+![Python](https://img.shields.io/badge/python-3.11%2B-3b82f6)
+![License](https://img.shields.io/badge/license-MIT-informational)
 
-- **Backend:** FastAPI + Jinja UI (full-stack single service)
-- **LLM:** mock provider by default; optional OpenAI / Ollama via env
-- **Packaging:** Docker + docker-compose
-- **Tests:** pytest API smoke tests
-
-## Architecture
-
-```text
-Browser UI ──► FastAPI routes ──► domain store (JSON)
-                   │
-                   └──► llm.complete() (mock | openai | ollama)
-```
-
-## Quick start (local)
+## Quick start
 
 ```bash
 python -m venv .venv
-# Windows: .venv\Scripts\activate
-source .venv/bin/activate
-pip install -r requirements.txt
+source .venv/bin/activate  # Windows: .venv\\Scripts\\activate
+pip install -r requirements.txt -r requirements-dev.txt
 cp .env.example .env
 uvicorn backend.main:app --reload --port 8000
 ```
-
-Open http://127.0.0.1:8000
 
 ## Docker
 
@@ -36,19 +22,18 @@ Open http://127.0.0.1:8000
 docker compose up --build
 ```
 
-## API
-
-- `GET /health`
-- `GET /api/tickets`
-- `POST /api/tickets`
-- `POST /api/triage` — Suggest priority, macros, and next reply
-
 ## Tests
 
 ```bash
-pytest -q
+pytest -q --cov=backend
 ```
 
-## Notes
+## Docs
 
-Production-shaped learning app: real routes, UI, Docker, and tests. Swap `LLM_MODE=openai` or `ollama` when you have credentials/models.
+- [Architecture](docs/architecture.md)
+- [API](docs/api.md)
+- [Deployment](docs/deployment.md)
+
+## License
+
+MIT — see [LICENSE](LICENSE).

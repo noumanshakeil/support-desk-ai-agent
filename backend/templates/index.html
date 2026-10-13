@@ -1,53 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{{ title }}</title>
-  <link rel="stylesheet" href="/static/styles.css" />
-</head>
-<body>
-  <main>
-    <h1>{{ title }}</h1>
-    <p class="sub">{{ description }} · LLM <span class="pill">{{ llm_mode }}</span></p>
-    <div class="grid">
-      <section class="card">
-        <h2>Create ticket</h2>
-        <form method="post" action="/ui/create">
-        <label>subject</label><input name="subject" placeholder="subject" required />
-<label>body</label><input name="body" placeholder="body" required />
-<label>priority</label><input name="priority" placeholder="priority" required />
-          <button type="submit">Save</button>
-        </form>
-        <h2 style="margin-top:1.25rem">AI action: {{ action }}</h2>
-        <p class="sub">{{ action_desc }}</p>
-        <form method="post" action="/ui/action">
-          <label>prompt</label>
-          <textarea name="prompt" rows="4" placeholder="Describe what you need..."></textarea>
-          <button type="submit">Run {{ action }}</button>
-        </form>
-        {% if last_result %}
-        <h3>Last result</h3>
-        <pre>{{ last_result }}</pre>
-        {% endif %}
-      </section>
-      <section class="card">
-        <h2>{{ resource }} ({{ items|length }})</h2>
-        <table>
-          <thead><tr><th>id</th><th>data</th></tr></thead>
-          <tbody>
-          {% for item in items %}
-            <tr>
-              <td>{{ item.id }}</td>
-              <td><code>{{ item }}</code></td>
-            </tr>
-          {% else %}
-            <tr><td colspan="2">No items yet</td></tr>
-          {% endfor %}
-          </tbody>
-        </table>
-      </section>
-    </div>
-  </main>
-</body>
-</html>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>{{ title }}</title><link rel="stylesheet" href="/static/styles.css"/></head><body><main>
+<h1>{{ title }}</h1><p class="sub">Create a ticket → AI triage → macros, SLA, and reply draft in one place.</p>
+<div class="grid"><section class="card"><h2>New ticket</h2>
+<form method="post" action="/ui/tickets">
+  <label>Subject</label><input name="subject" required/>
+  <label>Requester</label><input name="requester" value="customer@example.com"/>
+  <label>Body</label><textarea name="body" rows="6" required></textarea>
+  <button type="submit">Triage with AI</button>
+</form></section>
+<section class="card"><h2>Inbox</h2><table><thead><tr><th>Ticket</th><th>Triage</th><th></th></tr></thead><tbody>
+{% for t in tickets %}
+<tr><td><strong>{{ t.subject }}</strong><div class="sub">{{ t.requester }} · {{ t.id }}</div><pre>{{ t.body }}</pre></td>
+<td><span class="pill">{{ t.priority }}</span> <span class="pill">{{ t.category }}</span>
+<div>SLA {{ t.sla_hours }}h</div><div>Macros: {{ t.macros_json }}</div><pre>{{ t.reply_draft }}</pre></td>
+<td>{% if t.status != 'closed' %}<form method="post" action="/ui/tickets/{{ t.id }}/close"><button class="secondary" type="submit">Close</button></form>{% else %}<span class="pill">closed</span>{% endif %}</td></tr>
+{% else %}<tr><td colspan="3">No tickets yet.</td></tr>{% endfor %}
+</tbody></table></section></div></main></body></html>
